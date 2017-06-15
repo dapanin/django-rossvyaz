@@ -1,4 +1,5 @@
 # coding: utf-8
+from django_rossvyaz.models import PhoneCode
 
 
 replace_data = {
@@ -134,7 +135,6 @@ class CleanRegionError(Exception):
 
 def clean_region(region_name):
     region_name = ' '.join(region_name.strip().split())
-    with_replaced = False
     cleaned_region_name = replace_data.get(region_name)
     if cleaned_region_name is None:
         if region_name not in other_whitelist:
@@ -144,3 +144,33 @@ def clean_region(region_name):
                 'other_whitelist'.format(repr(region_name)))
         cleaned_region_name = region_name
     return cleaned_region_name
+
+
+class CleanPhoneError(Exception):
+    pass
+
+
+def clean_phone(phone, phone_type):
+    if phone_type == PhoneCode.PHONE_TYPE_DEF:
+        return clean_phone_def(phone)
+    raise CleanPhoneError('Phone type {} dnot support'.format(phone_type))
+
+
+DEF_FORMAT_ERROR = 'Valid DEF (RU) phone in format 9vvxxxyyzz'
+
+
+def clean_phone_def(phone):
+    err = DEF_FORMAT_ERROR
+    if len(phone) == 11:
+        if phone[0] not in '78':
+            raise CleanPhoneError(err)
+        phone = phone[1:]
+    if len(phone) != 10:
+        raise CleanPhoneError(err)
+    if not phone.startswith('9'):
+        raise CleanPhoneError(err)
+    try:
+        phone = str(int(phone))
+    except ValueError:
+        raise CleanPhoneError(err)
+    return phone
