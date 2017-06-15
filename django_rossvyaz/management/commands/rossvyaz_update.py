@@ -1,9 +1,9 @@
 # coding: utf-8
 from __future__ import print_function, unicode_literals
 try:
-    from cStringIO import StringIO as BytesIO
+    from cStringIO import StringIO
 except ImportError:
-    from io import BytesIO
+    from io import StringIO
 
 from django.core.mail import mail_admins
 from django.core.management.base import BaseCommand, CommandError
@@ -39,9 +39,12 @@ avail_types = {item[0] for item in PhoneCode.PHONE_TYPE_CHOICES}
 
 class Command(BaseCommand):
 
+    def add_arguments(self, parser):
+        parser.add_argument('phone_type', type=str)
+
     def handle(self, *args, **options):
 
-        phone_type = args[0]
+        phone_type = options['phone_type']
 
         if phone_type not in avail_types:
             _handle_error(
@@ -52,11 +55,11 @@ class Command(BaseCommand):
         source_url = ROSSVYAZ_SOURCE_URLS[phone_type]
 
         print("Download csv-file: {}...".format(source_url))
-        f = urlopen(source_url)
-        phonecodes_buf = BytesIO(f.read().decode(ROSSVYAZ_CODING))
-        f.close()
+        phonecodes_file = urlopen(source_url)
+        phonecodes_file.readline()  # First line is titles row
         print("Start updating...")
-        lines = _get_phonecode_lines(phonecodes_buf, phone_type)
+        lines = _get_phonecode_lines(phonecodes_file, phone_type)
+        phonecodes_file.close()
         cursor = connection.cursor()
         if hasattr(transaction, 'atomic'):
             # django >= 1.6
@@ -79,9 +82,12 @@ class Command(BaseCommand):
                 transaction.leave_transaction_management()
         return "Table rossvyaz phonecode is update.\n"
 
-def _get_phonecode_lines(phonecode_buf, phone_type):
+def _get_phonecode_lines(phonecode_file, phone_type):
     ret = []
-    for line in phonecode_buf:
+    for l in phonecode_file:
+        line = l.decode(ROSSVYAZ_CODING).strip()
+        if not line:
+            continue
         rossvyaz_row = line.split('\t;\t')
         region_name = rossvyaz_row[-1]
         try:
