@@ -21,3 +21,8 @@ class PhoneCode(models.Model):
         max_length=16,
         choices=PHONE_TYPE_CHOICES,
     )
+
+    class Meta:
+        index_together = [
+            ('first_code', 'from_code', 'to_code'),
+        ]
