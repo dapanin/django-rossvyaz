@@ -1,3 +1,4 @@
+# coding: utf-8
 from django.db import models
 
 
@@ -9,10 +10,14 @@ class PhoneCode(models.Model):
         (PHONE_TYPE_DEF, PHONE_TYPE_DEF),
     ]
 
-    first_code = models.CharField(max_length=16)
-    from_code = models.CharField(max_length=16)
-    to_code = models.CharField(max_length=16)
-    block_size = models.PositiveIntegerField()
-    operator = models.CharField(max_length=255)
-    region = models.CharField(max_length=255)
-    phone_type = models.CharField(max_length=16, choices=PHONE_TYPE_CHOICES)
+    first_code = models.CharField(verbose_name='АВС/DEF', max_length=16)
+    from_code = models.CharField(verbose_name='От', max_length=16)
+    to_code = models.CharField(verbose_name='До', max_length=16)
+    block_size = models.PositiveIntegerField(verbose_name='Емкость')
+    operator = models.CharField(verbose_name='Оператор', max_length=255)
+    region = models.CharField(verbose_name='Регион', max_length=255)
+    phone_type = models.CharField(
+        verbose_name='Тип кода',
+        max_length=16,
+        choices=PHONE_TYPE_CHOICES,
+    )

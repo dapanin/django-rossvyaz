@@ -8,8 +8,13 @@ except ImportError:
 from django.core.mail import mail_admins
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection, transaction
-from django_rossvyaz.conf import ROSSVYAZ_SOURCE_URLS, ROSSVYAZ_CODING, \
-    ROSSVYAZ_SEND_MESSAGE_FOR_ERRORS
+from django_rossvyaz.conf import (
+    ROSSVYAZ_SOURCE_URLS,
+    ROSSVYAZ_CODING,
+    ROSSVYAZ_SEND_MESSAGE_FOR_ERRORS,
+)
+from django_rossvyaz.logic import clean_region, CleanRegionError
+from django_rossvyaz.models import PhoneCode
 try:
     from urllib import urlopen
 except ImportError:
@@ -29,11 +34,20 @@ ERROR_SUBJECT = "Error of command rossvyaz_update"
 send_message = ROSSVYAZ_SEND_MESSAGE_FOR_ERRORS
 
 
+avail_types = {item[0] for item in PhoneCode.PHONE_TYPE_CHOICES}
+
+
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        phone_type = options['phone_type']
+        phone_type = args[0]
+
+        if phone_type not in avail_types:
+            _handle_error(
+                'Bad phone_type={} (Avail only: {}. Add new '
+                'type to django_rossvyaz.models.PhoneCode.PHONE_TYPE_CHOICES'
+                ')'.format(repr(phone_type), repr(avail_types)))
 
         source_url = ROSSVYAZ_SOURCE_URLS[phone_type]
 
@@ -68,7 +82,13 @@ class Command(BaseCommand):
 def _get_phonecode_lines(phonecode_buf, phone_type):
     ret = []
     for line in phonecode_buf:
-        row = line.split('\t;\t') + [phone_type]
+        rossvyaz_row = line.split('\t;\t')
+        region_name = rossvyaz_row[-1]
+        try:
+            rossvyaz_row[-1] = clean_region(region_name)
+        except CleanRegionError as e:
+            _handle_error(e)
+        row = rossvyaz_row + [phone_type]
         ret.append(row)
     return ret
 
