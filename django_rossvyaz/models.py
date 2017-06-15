@@ -1,5 +1,6 @@
 # coding: utf-8
 from django.db import models
+from django_rossvyaz.managers import PhoneCodeManager
 
 
 class PhoneCode(models.Model):
@@ -21,6 +22,8 @@ class PhoneCode(models.Model):
         max_length=16,
         choices=PHONE_TYPE_CHOICES,
     )
+
+    objects = PhoneCodeManager()
 
     class Meta:
         index_together = [
