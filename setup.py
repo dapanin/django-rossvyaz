@@ -16,7 +16,7 @@ if is_py2:
 
 setup(
     name='django-rossvyaz',
-    version='1.0.0-alpha',
+    version='1.0.0-beta',
     author='Ivan Petukhov',
     author_email='satels@gmail.com',
     packages=['django_rossvyaz', 'django_rossvyaz.management',
@@ -29,7 +29,7 @@ setup(
     long_description=long_description,
 
     classifiers=(
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
