@@ -40,17 +40,20 @@ avail_types = {item[0] for item in PhoneCode.PHONE_TYPE_CHOICES}
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
-        parser.add_argument('phone_type', type=str)
-        parser.add_argument('clean_region', type=bool, default=False)
-        parser.add_argument('filename', type=str, default=None)
+        parser.add_argument('--phone-type', type=str)
+        parser.add_argument('--clean-region', type=bool, default=False)
+        parser.add_argument('--filename', type=str, default=None)
+        parser.add_argument('--encoding', type=str, default=None)
 
     def handle(self, *args, **options):
 
         phone_type = options['phone_type']
-
         with_clean = options['clean_region']
-
         filename = options['filename']
+        coding = options['encoding']
+
+        if coding is None:
+            coding = ROSSVYAZ_CODING
 
         if phone_type not in avail_types:
             _handle_error(
@@ -64,10 +67,10 @@ class Command(BaseCommand):
             phonecodes_file = urlopen(source_url)
         else:
             print("Open csv-file: {}...".format(filename))
-            phonecodes_file = open(filename)
+            phonecodes_file = open(filename, 'rb')
         phonecodes_file.readline()  # First line is titles row
         print("Start updating...")
-        lines = _get_phonecode_lines(phonecodes_file, phone_type, with_clean)
+        lines = _get_phonecode_lines(phonecodes_file, phone_type, coding, with_clean)
         phonecodes_file.close()
         cursor = connection.cursor()
         if hasattr(transaction, 'atomic'):
@@ -91,10 +94,10 @@ class Command(BaseCommand):
                 transaction.leave_transaction_management()
         return "Table rossvyaz phonecode is update.\n"
 
-def _get_phonecode_lines(phonecode_file, phone_type, with_clean):
+def _get_phonecode_lines(phonecode_file, phone_type, coding, with_clean):
     ret = []
     for l in phonecode_file:
-        line = l.decode(ROSSVYAZ_CODING).strip()
+        line = l.decode(coding).strip()
         if not line:
             continue
         rossvyaz_row = line.split(';')
