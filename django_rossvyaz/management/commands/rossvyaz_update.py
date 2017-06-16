@@ -41,10 +41,16 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('phone_type', type=str)
+        parser.add_argument('clean_region', type=bool, default=False)
+        parser.add_argument('filename', type=str, default=None)
 
     def handle(self, *args, **options):
 
         phone_type = options['phone_type']
+
+        with_clean = options['clean_region']
+
+        filename = options['filename']
 
         if phone_type not in avail_types:
             _handle_error(
@@ -52,13 +58,16 @@ class Command(BaseCommand):
                 'type to django_rossvyaz.models.PhoneCode.PHONE_TYPE_CHOICES'
                 ')'.format(repr(phone_type), repr(avail_types)))
 
-        source_url = ROSSVYAZ_SOURCE_URLS[phone_type]
-
-        print("Download csv-file: {}...".format(source_url))
-        phonecodes_file = urlopen(source_url)
+        if filename is None:
+            source_url = ROSSVYAZ_SOURCE_URLS[phone_type]
+            print("Download csv-file: {}...".format(source_url))
+            phonecodes_file = urlopen(source_url)
+        else:
+            print("Open csv-file: {}...".format(filename))
+            phonecodes_file = open(filename)
         phonecodes_file.readline()  # First line is titles row
         print("Start updating...")
-        lines = _get_phonecode_lines(phonecodes_file, phone_type)
+        lines = _get_phonecode_lines(phonecodes_file, phone_type, with_clean)
         phonecodes_file.close()
         cursor = connection.cursor()
         if hasattr(transaction, 'atomic'):
@@ -82,18 +91,21 @@ class Command(BaseCommand):
                 transaction.leave_transaction_management()
         return "Table rossvyaz phonecode is update.\n"
 
-def _get_phonecode_lines(phonecode_file, phone_type):
+def _get_phonecode_lines(phonecode_file, phone_type, with_clean):
     ret = []
     for l in phonecode_file:
         line = l.decode(ROSSVYAZ_CODING).strip()
         if not line:
             continue
-        rossvyaz_row = line.split('\t;\t')
-        region_name = rossvyaz_row[-1]
-        try:
-            rossvyaz_row[-1] = clean_region(region_name)
-        except CleanRegionError as e:
-            _handle_error(e)
+        rossvyaz_row = line.split(';')
+        region_name = rossvyaz_row[-1].strip()
+
+        if with_clean:
+            try:
+                rossvyaz_row[-1] = clean_region(region_name)
+            except CleanRegionError as e:
+                _handle_error(e)
+
         row = rossvyaz_row + [phone_type]
         ret.append(row)
     return ret
