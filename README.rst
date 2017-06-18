@@ -63,6 +63,20 @@ django-rossvyaz
       print(phonecode.region)  # Код региона (или название региона) (77)
       print(phonecode.phone_type)  # 'def'
 
+Пример использования через Postgres SQL ::
+
+        SELECT
+            regioncode.region_name AS region_name
+        FROM
+            phones_phone AS phone,
+            django_rossvyaz_phonecode AS phonecode,
+            regions_regioncode AS regioncode
+        WHERE
+            regioncode.region_id = phonecode.region AND
+            substring(phone.phone from 3 for 3) = phonecode.first_code AND
+            substring(phone.phone from 6 for 8) >= phonecode.from_code AND
+            substring(phone.phone from 6 for 8) <= phonecode.to_code AND
+            phone.id = 5
 
 Обновления базы
 ---------------
