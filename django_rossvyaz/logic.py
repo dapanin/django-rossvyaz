@@ -161,7 +161,11 @@ DEF_FORMAT_ERROR = 'Valid DEF (RU) phone in format 9vvxxxyyzz'
 
 def clean_phone_def(phone):
     err = DEF_FORMAT_ERROR
-    if len(phone) == 11:
+    if len(phone) == 12:
+        if phone[:2] != '+7':
+            raise CleanPhoneError(err)
+        phone = phone[2:]
+    elif len(phone) == 11:
         if phone[0] not in '78':
             raise CleanPhoneError(err)
         phone = phone[1:]
