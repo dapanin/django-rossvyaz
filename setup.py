@@ -28,7 +28,7 @@ setup(
     description='РосСвязь: Выписка из реестра Российской системы и плана нумерации - подготовленная таблица с очищенными регионами'.encode('utf8'),
     long_description=long_description,
 
-    classifiers=(
+    classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
@@ -37,5 +37,5 @@ setup(
         'Programming Language :: Python',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Natural Language :: Russian',
-    ),
+    ],
 )
