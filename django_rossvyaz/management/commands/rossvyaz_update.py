@@ -101,7 +101,8 @@ def _get_phonecode_lines(phonecode_file, phone_type, coding, with_clean):
         if not line:
             continue
         rossvyaz_row = line.split(';')
-        region_name = rossvyaz_row[-1].strip()
+        rossvyaz_row = [v.strip() for v in rossvyaz_row]
+        region_name = rossvyaz_row[-1]
 
         if with_clean:
             try:
@@ -120,7 +121,7 @@ def _execute_sql(cursor, lines, phone_type):
     cursor.executemany(INSERT_SQL, [l for l in lines if l])
 
 def _handle_error(e):
-    message = "The data not updated: {}".format(e)
+    message = "The data not updated: {}".format(traceback.format_exception(e))
     if send_message:
         mail_admins(subject=ERROR_SUBJECT, message=message)
     raise CommandError(message)
