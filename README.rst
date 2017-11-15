@@ -75,8 +75,8 @@ django-rossvyaz
         WHERE
             regioncode.region_id = phonecode.region AND
             substring(phone.phone from 3 for 3) = phonecode.first_code AND
-            substring(phone.phone from 6 for 8) >= phonecode.from_code AND
-            substring(phone.phone from 6 for 8) <= phonecode.to_code AND
+            substring(phone.phone from 6 for 8)::int >= phonecode.from_code::int AND
+            substring(phone.phone from 6 for 8)::int <= phonecode.to_code::int AND
             phone.id = 5
 
 Обновления базы
