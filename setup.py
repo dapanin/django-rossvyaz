@@ -16,7 +16,7 @@ if is_py2:
 
 setup(
     name='django-rossvyaz',
-    version='1.1.1',
+    version='1.1.2',
     author='Ivan Petukhov',
     author_email='satels@gmail.com',
     packages=['django_rossvyaz', 'django_rossvyaz.management',
