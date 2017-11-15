@@ -55,13 +55,14 @@ django-rossvyaz
 
   phonecodes = PhoneCode.objects.by_phone(phone)
   if phonecodes.exists():
-      phonecode = phonecodes[0]
-      print(phonecode.first_code)  # 968
-      print(phonecode.from_code, phonecode.to_code)  # Диапозон кодов (В этом примере: '3500000'-'7999999')
-      print(phonecode.block_size)  # Кол-во номеров в диапозоне (4500000)
-      print(phonecode.operator)  # Оператор связи ('ВымпелКом')
-      print(phonecode.region)  # Код региона (или название региона) (77)
-      print(phonecode.phone_type)  # 'def'
+      for num, phonecode in enumerate(phonecodes.iterators()):
+          print('Найден #{}'.format(num + 1))
+          print(phonecode.first_code)  # 968
+          print(phonecode.from_code, phonecode.to_code)  # Диапозон кодов (В этом примере: '3500000'-'7999999')
+          print(phonecode.block_size)  # Кол-во номеров в диапозоне (4500000)
+          print(phonecode.operator)  # Оператор связи ('ВымпелКом')
+          print(phonecode.region)  # Код региона (или название региона) (77)
+          print(phonecode.phone_type)  # 'def'
 
 Пример использования через Postgres SQL ::
 
