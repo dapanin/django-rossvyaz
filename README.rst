@@ -55,7 +55,7 @@ django-rossvyaz
 
   phonecodes = PhoneCode.objects.by_phone(phone)
   if phonecodes.exists():
-      for num, phonecode in enumerate(phonecodes.iterators()):
+      for num, phonecode in enumerate(phonecodes.iterator()):
           print('Найден #{}'.format(num + 1))
           print(phonecode.first_code)  # 968
           print(phonecode.from_code, phonecode.to_code)  # Диапозон кодов (В этом примере: '3500000'-'7999999')
