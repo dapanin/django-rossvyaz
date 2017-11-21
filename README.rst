@@ -89,3 +89,9 @@ django-rossvyaz
 Рекомендуется обновлять базу с кодами отсюда: https://zniis.ru/bdpn/operators/router-table - скачивается файл XLSX, форматируете в CSV формат (можно использовать этот сервис для форматирования: https://www.kontrolnaya-rabota.ru/convert/xlsx2csv/): **zniis.csv**  ::
 
   $ python manage.py rossvyaz_update --phone-type=def --encoding='utf-8' --filename=/path/to/zniis.csv
+
+Готовое API
+-----------
+
+* Но номеру: https://calltools.ru/lk/cabapi_external/api/v1/def_codes/by_phone/?phone=9687298907
+* Вся база: https://calltools.ru/lk/cabapi_external/api/v1/def_codes/all/
