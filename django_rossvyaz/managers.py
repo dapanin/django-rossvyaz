@@ -13,8 +13,8 @@ class PhoneCodeManager(models.Manager):
         else:
             # django < 1.6
             queryset = super(PhoneCodeManager, self).get_query_set()
-        return queryset.extra(where=[
-            'first_code=%s',
-            'to_code::int >= %s',
-            'from_code::int <= %s',
-        ], params=[first_code, int(last_code), int(last_code)])
+        return queryset.filter(
+            first_code=first_code,
+            to_code__gte=last_code,
+            from_code__lte=last_code,
+        )
