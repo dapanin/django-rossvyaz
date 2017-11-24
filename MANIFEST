@@ -11,4 +11,5 @@ django_rossvyaz/management/commands/__init__.py
 django_rossvyaz/management/commands/rossvyaz_update.py
 django_rossvyaz/migrations/0001_initial.py
 django_rossvyaz/migrations/0002_auto_20170615_1743.py
+django_rossvyaz/migrations/0003_phonecode_mnc.py
 django_rossvyaz/migrations/__init__.py
