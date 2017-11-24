@@ -26,8 +26,8 @@ DELETE_SQL = "DELETE FROM django_rossvyaz_phonecode WHERE phone_type='{}'"
 
 INSERT_SQL = """
 INSERT INTO django_rossvyaz_phonecode
-(first_code, from_code, to_code, block_size, operator, region, phone_type)
-VALUES (%s, %s, %s, %s, %s, %s, %s)
+(first_code, from_code, to_code, block_size, operator, region, mnc, phone_type)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 """
 
 ERROR_SUBJECT = "Error of command rossvyaz_update"
@@ -118,6 +118,7 @@ def _execute_sql(cursor, lines, phone_type):
     print("Delete old rows in table rossvyaz phonecodes...")
     cursor.execute(DELETE_SQL.format(phone_type))
     print("Write new data...")
+
     cursor.executemany(INSERT_SQL, [l for l in lines if l])
 
 def _handle_error(e):
