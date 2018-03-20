@@ -129,6 +129,16 @@ for right_name in replace_data.values():
     other_whitelist.add(right_name)
 
 
+class CleanOperatorError(Exception):
+    pass
+
+
+def clean_operator(operator):
+    if not operator:
+        return operator
+    return operator.title()
+
+
 class CleanRegionError(Exception):
     pass
 

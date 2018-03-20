@@ -13,7 +13,12 @@ from django_rossvyaz.conf import (
     ROSSVYAZ_CODING,
     ROSSVYAZ_SEND_MESSAGE_FOR_ERRORS,
 )
-from django_rossvyaz.logic import clean_region, CleanRegionError
+from django_rossvyaz.logic import (
+    clean_region,
+    clean_operator,
+    CleanRegionError,
+    CleanOperatorError,
+)
 from django_rossvyaz.models import PhoneCode
 try:
     from urllib import urlopen
@@ -26,7 +31,7 @@ DELETE_SQL = "DELETE FROM django_rossvyaz_phonecode WHERE phone_type='{}'"
 
 INSERT_SQL = """
 INSERT INTO django_rossvyaz_phonecode
-(first_code, from_code, to_code, block_size, operator, mnc, region, phone_type)
+(first_code, from_code, to_code, block_size, mnc, operator, region, phone_type)
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 """
 
@@ -102,9 +107,13 @@ def _get_phonecode_lines(phonecode_file, phone_type, coding, with_clean):
             continue
         rossvyaz_row = line.split(';')
         rossvyaz_row = [v.strip().strip('\'"') for v in rossvyaz_row]
+        operator = rossvyaz_row[-2]
         region_name = rossvyaz_row[-1]
 
         if with_clean:
+
+            rossvyaz_row[-2] = clean_operator(operator)
+
             try:
                 rossvyaz_row[-1] = clean_region(region_name)
             except CleanRegionError as e:
