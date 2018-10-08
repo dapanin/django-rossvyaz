@@ -17,4 +17,4 @@ class PhoneCodeManager(models.Manager):
             first_code=first_code,
             to_code__gte=last_code,
             from_code__lte=last_code,
-        )
+        ).order_by('block_size')
