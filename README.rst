@@ -78,6 +78,7 @@ django-rossvyaz
             substring(phone.phone from 6 for 8)::int >= phonecode.from_code::int AND
             substring(phone.phone from 6 for 8)::int <= phonecode.to_code::int AND
             phone.id = 5
+        ORDER BY block_size ASC;
 
 Обновления базы
 ---------------
