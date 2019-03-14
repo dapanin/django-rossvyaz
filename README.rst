@@ -61,6 +61,7 @@ django-rossvyaz
           print(phonecode.from_code, phonecode.to_code)  # Диапозон кодов (В этом примере: '3500000'-'7999999')
           print(phonecode.block_size)  # Кол-во номеров в диапозоне (4500000)
           print(phonecode.operator)  # Оператор связи ('ВымпелКом')
+          print(phonecode.mnc)  # Mobile network code 
           print(phonecode.region)  # Код региона (или название региона) (77)
           print(phonecode.phone_type)  # 'def'
 
