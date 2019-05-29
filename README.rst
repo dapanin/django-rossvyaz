@@ -61,6 +61,7 @@ django-rossvyaz
           print(phonecode.from_code, phonecode.to_code)  # Диапозон кодов (В этом примере: '3500000'-'7999999')
           print(phonecode.block_size)  # Кол-во номеров в диапозоне (4500000)
           print(phonecode.operator)  # Оператор связи ('ВымпелКом')
+          print(phonecode.mnc)  # Mobile network code 
           print(phonecode.region)  # Код региона (или название региона) (77)
           print(phonecode.phone_type)  # 'def'
 
@@ -78,6 +79,7 @@ django-rossvyaz
             substring(phone.phone from 6 for 8)::int >= phonecode.from_code::int AND
             substring(phone.phone from 6 for 8)::int <= phonecode.to_code::int AND
             phone.id = 5
+        ORDER BY block_size ASC;
 
 Обновления базы
 ---------------
@@ -86,7 +88,7 @@ django-rossvyaz
 
   $ python manage.py rossvyaz_update --phone-type=def --clean-region
   
-Рекомендуется обновлять базу с кодами отсюда: https://zniis.ru/bdpn/operators/router-table - скачивается файл XLSX, форматируете в CSV формат (можно использовать этот сервис для форматирования: https://www.kontrolnaya-rabota.ru/convert/xlsx2csv/): **zniis.csv**  ::
+Рекомендуется обновлять базу с кодами отсюда: https://zniis.ru/bdpn/tablitsa-marshrutnykh-nomerov/router-table - скачивается файл XLSX, форматируете в CSV формат (можно использовать этот сервис для форматирования: https://www.kontrolnaya-rabota.ru/convert/xlsx2csv/): **zniis.csv**  ::
 
   $ python manage.py rossvyaz_update --phone-type=def --encoding='utf-8' --filename=/path/to/zniis.csv
 
