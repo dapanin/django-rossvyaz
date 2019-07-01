@@ -17,7 +17,7 @@ class PhoneCode(models.Model):
     block_size = models.PositiveIntegerField(verbose_name='Емкость')
     operator = models.CharField(verbose_name='Оператор', max_length=255)
     region = models.CharField(verbose_name='Регион', max_length=255)
-    mnc = models.CharField(verbose_name='Mobile Network Code', max_length=32)
+    mnc = models.CharField(verbose_name='Mobile Network Code', max_length=32, db_index=True)
     phone_type = models.CharField(
         verbose_name='Тип кода',
         max_length=16,
