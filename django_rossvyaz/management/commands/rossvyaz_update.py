@@ -106,7 +106,7 @@ def _get_phonecode_lines(phonecode_file, phone_type, coding, with_clean):
         if not line:
             continue
         rossvyaz_row = line.split(';')
-        rossvyaz_row = [v.strip().strip('\'"') for v in rossvyaz_row]
+        rossvyaz_row = [v.strip().strip('\'"').strip("\t").strip() for v in rossvyaz_row]
         operator = rossvyaz_row[-2]
         region_name = rossvyaz_row[-1]
 
