@@ -95,5 +95,5 @@ django-rossvyaz
 Готовое API
 -----------
 
-* Но номеру: https://calltools.ru/lk/cabapi_external/api/v1/def_codes/by_phone/?phone=9687298907
+* Но номеру: https://calltools.ru/lk/cabapi_external/api/v1/def_codes/by_phone/?phone=%2b79687298907
 * Вся база: https://calltools.ru/lk/cabapi_external/api/v1/def_codes/all/
