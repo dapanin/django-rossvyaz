@@ -31,7 +31,7 @@ DELETE_SQL = "DELETE FROM django_rossvyaz_phonecode WHERE phone_type='{}'"
 
 INSERT_SQL = """
 INSERT INTO django_rossvyaz_phonecode
-(first_code, from_code, to_code, block_size, mnc, operator, region, phone_type)
+(first_code, from_code, to_code, block_size, operator, region, mnc, phone_type)
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 """
 
