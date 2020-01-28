@@ -88,9 +88,24 @@ django-rossvyaz
 
   $ python manage.py rossvyaz_update --phone-type=def --clean-region
   
-Рекомендуется обновлять базу с кодами отсюда: https://zniis.ru/bdpn/tablitsa-marshrutnykh-nomerov/router-table - скачивается файл XLSX, форматируете в CSV формат (можно использовать этот сервис для форматирования: https://www.kontrolnaya-rabota.ru/convert/xlsx2csv/): **zniis.csv**  ::
+Рекомендуется обновлять базу с кодами отсюда: https://zniis.ru/bdpn/tablitsa-marshrutnykh-nomerov/router-table - скачивается файл XLSX, форматируете в CSV формат: **zniis.csv**  ::
 
   $ python manage.py rossvyaz_update --phone-type=def --encoding='utf-8' --filename=/path/to/zniis.csv
+
+Формат CSV:
+
+* разделитель столбцов **;**
+* все ячейки в двойных кавычках **"**
+
+Порядок столбцов в CSV:
+
+1. first_code
+2. from_code
+3. to_code
+4. block_size
+5. operator
+6. region
+7. mnc
 
 Готовое API
 -----------
