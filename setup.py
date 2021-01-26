@@ -25,6 +25,7 @@ setup(
     url='https://github.com/satels/django-rossvyaz',
     download_url='https://github.com/satels/django-rossvyaz/zipball/master',
     license='MIT license',
+    summary='РосСвязь: Выписка из реестра Российской системы и плана нумерации - подготовленная таблица с очищенными регионами'.encode('utf8'),
     description='РосСвязь: Выписка из реестра Российской системы и плана нумерации - подготовленная таблица с очищенными регионами'.encode('utf8'),
     long_description=long_description,
 
