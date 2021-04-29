@@ -18,7 +18,7 @@ setup(
     long_description=long_description,
     include_package_data=True,
     package_data={
-        'paymaster': ['templates/django_rossvyaz/*.html'],
+        'django_rossvyaz': ['templates/django_rossvyaz/*.html'],
     },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
