@@ -1,6 +1,4 @@
-# coding: utf-8
 import traceback
-from __future__ import print_function, unicode_literals
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -18,15 +16,9 @@ from django_rossvyaz.logic import (
     clean_region,
     clean_operator,
     CleanRegionError,
-    CleanOperatorError,
 )
-from django_rossvyaz.models import PhoneCode
-try:
-    from urllib import urlopen
-except ImportError:
-    from urllib.request import Request, urlopen as urlopen_py3
-    def urlopen(url):
-        return urlopen_py3(Request(url))
+from urllib.request import Request, urlopen
+
 
 DELETE_SQL = "DELETE FROM django_rossvyaz_phonecode WHERE phone_type='{}'"
 
@@ -36,7 +28,7 @@ INSERT INTO django_rossvyaz_phonecode
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 """
 
-ERROR_SUBJECT = "Error of command rossvyaz_update"
+ERROR_SUBJECT = 'Error of command rossvyaz_update'
 send_message = ROSSVYAZ_SEND_MESSAGE_FOR_ERRORS
 
 
@@ -69,13 +61,13 @@ class Command(BaseCommand):
 
         if filename is None:
             source_url = ROSSVYAZ_SOURCE_URLS[phone_type]
-            print("Download csv-file: {}...".format(source_url))
-            phonecodes_file = urlopen(source_url)
+            print(f'Download csv-file: {source_url}...')
+            phonecodes_file = urlopen(Request(source_url))
         else:
-            print("Open csv-file: {}...".format(filename))
+            print(f'Open csv-file: {filename}...')
             phonecodes_file = open(filename, 'rb')
         phonecodes_file.readline()  # First line is titles row
-        print("Start updating...")
+        print('Start updating...')
         lines = _get_phonecode_lines(phonecodes_file, phone_type, coding, with_clean)
         phonecodes_file.close()
         cursor = connection.cursor()
@@ -98,7 +90,8 @@ class Command(BaseCommand):
             finally:
                 transaction.rollback()
                 transaction.leave_transaction_management()
-        return "Table rossvyaz phonecode is update.\n"
+        return 'Table rossvyaz phonecode is update.\n'
+
 
 def _get_phonecode_lines(phonecode_file, phone_type, coding, with_clean):
     ret = []
@@ -124,15 +117,17 @@ def _get_phonecode_lines(phonecode_file, phone_type, coding, with_clean):
         ret.append(row)
     return ret
 
+
 def _execute_sql(cursor, lines, phone_type):
-    print("Delete old rows in table rossvyaz phonecodes...")
+    print('Delete old rows in table rossvyaz phonecodes...')
     cursor.execute(DELETE_SQL.format(phone_type))
-    print("Write new data...")
+    print('Write new data...')
 
     cursor.executemany(INSERT_SQL, [l for l in lines if l])
 
+
 def _handle_error(e):
-    message = "The data not updated: {}".format(traceback.format_exception(e))
+    message = f'The data not updated: {traceback.format_exception(e)}'
     if send_message:
         mail_admins(subject=ERROR_SUBJECT, message=message)
     raise CommandError(message)

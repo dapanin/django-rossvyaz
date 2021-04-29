@@ -1,22 +1,11 @@
 #!/usr/bin/env python
-# coding: utf-8
 from distutils.core import setup
-
-import sys
-
-is_py2 = sys.version_info < (3, 0, 0)
-
-if is_py2:
-    reload(sys).setdefaultencoding("UTF-8")
 
 long_description = open('README.rst').read()
 
-if is_py2:
-    long_description = long_description.decode('utf8')
-
 setup(
     name='django-rossvyaz',
-    version='1.2.0',
+    version='1.3.0',
     author='Ivan Petukhov',
     author_email='satels@gmail.com',
     packages=['django_rossvyaz', 'django_rossvyaz.management',
@@ -35,6 +24,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Natural Language :: Russian',
     ],

@@ -1,4 +1,3 @@
-# coding: utf-8
 from django_rossvyaz.models import PhoneCode
 
 
@@ -129,14 +128,10 @@ for right_name in replace_data.values():
     other_whitelist.add(right_name)
 
 
-class CleanOperatorError(Exception):
-    pass
-
-
 def clean_operator(operator):
-    if not operator:
-        return operator
-    return operator.title()
+    if operator:
+        return operator.title()
+    return operator
 
 
 class CleanRegionError(Exception):
@@ -149,9 +144,9 @@ def clean_region(region_name):
     if cleaned_region_name is None:
         if region_name not in other_whitelist:
             raise CleanRegionError(
-                'Bad region name: {}. Please, add rule for this extension to '
-                'django_rossvyaz.logic replace_data or '
-                'other_whitelist'.format(repr(region_name)))
+                f'Bad region name: {repr(region_name)}. Please, add rule for this '
+                'extension to django_rossvyaz.logic replace_data or '
+                'other_whitelist')
         cleaned_region_name = region_name
     return cleaned_region_name
 
@@ -163,7 +158,7 @@ class CleanPhoneError(Exception):
 def clean_phone(phone, phone_type):
     if phone_type == PhoneCode.PHONE_TYPE_DEF:
         return clean_phone_def(phone)
-    raise CleanPhoneError('Phone type {} dnot support'.format(phone_type))
+    raise CleanPhoneError(f'Phone type {phone_type} dnot support')
 
 
 DEF_FORMAT_ERROR = 'Valid DEF (RU) phone in format 9vvxxxyyzz'
