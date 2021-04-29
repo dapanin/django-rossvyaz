@@ -19,8 +19,7 @@ django-rossvyaz
 
 Потом следует добавить 'django_rossvyaz' в INSTALLED_APPS и выполнить ::
 
-  $ python manage.py syncdb  # Django < 1.7
-  $ python manage.py migrate django_rossvyaz  # Django >= 1.7
+  $ python manage.py migrate django_rossvyaz
 
 Настройка
 ---------

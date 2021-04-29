@@ -102,3 +102,4 @@ ENV/
 
 *.wpu
 *.wpr
+.idea/

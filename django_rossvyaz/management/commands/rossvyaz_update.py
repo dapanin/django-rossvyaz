@@ -55,9 +55,9 @@ class Command(BaseCommand):
 
         if phone_type not in avail_types:
             _handle_error(
-                'Bad phone_type={} (Avail only: {}. Add new '
-                'type to django_rossvyaz.models.PhoneCode.PHONE_TYPE_CHOICES'
-                ')'.format(repr(phone_type), repr(avail_types)))
+                f'Bad phone_type={repr(phone_type)} (Avail only: {repr(avail_types)}. '
+                'Add new type to django_rossvyaz.models.PhoneCode.PHONE_TYPE_CHOICES'
+                ')')
 
         if filename is None:
             source_url = ROSSVYAZ_SOURCE_URLS[phone_type]
@@ -71,25 +71,11 @@ class Command(BaseCommand):
         lines = _get_phonecode_lines(phonecodes_file, phone_type, coding, with_clean)
         phonecodes_file.close()
         cursor = connection.cursor()
-        if hasattr(transaction, 'atomic'):
-            # django >= 1.6
-            try:
-                with transaction.atomic():
-                    _execute_sql(cursor, lines, phone_type)
-            except Exception as e:
-                _handle_error(e)
-        else:
-            # django < 1.6
-            transaction.enter_transaction_management()
-            try:
-                transaction.managed(True)
+        try:
+            with transaction.atomic():
                 _execute_sql(cursor, lines, phone_type)
-                transaction.commit()
-            except Exception as e:
-                _handle_error(e)
-            finally:
-                transaction.rollback()
-                transaction.leave_transaction_management()
+        except Exception as e:
+            _handle_error(e)
         return 'Table rossvyaz phonecode is update.\n'
 
 
@@ -105,9 +91,7 @@ def _get_phonecode_lines(phonecode_file, phone_type, coding, with_clean):
         region_name = rossvyaz_row[-1]
 
         if with_clean:
-
             rossvyaz_row[-2] = clean_operator(operator)
-
             try:
                 rossvyaz_row[-1] = clean_region(region_name)
             except CleanRegionError as e:
