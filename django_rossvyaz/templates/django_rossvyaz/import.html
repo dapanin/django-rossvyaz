@@ -1,10 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Rossvyaz File Import</title>
 </head>
 <body>
-$END$
+    <h1>Rossvyaz File Import</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>import_file: {{ form.import_file }}</p>
+        <p>phone_type: {{ form.phone_type }}</p>
+        <p>with_clean_region: {{ form.with_clean_region }}</p>
+        <p>coding: {{ form.coding }}</p>
+        <p>
+            <input type="submit" />
+        </p>
+    </form>
+    {% if errors %}
+        <p>Errors: {{ errors }}</p>
+    {% endif %}
+    {% if success %}
+        <p>Success!</p>
+    {% endif %}
 </body>
 </html>
