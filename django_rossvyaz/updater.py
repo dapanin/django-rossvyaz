@@ -9,6 +9,7 @@ from django_rossvyaz.logic import (
     clean_operator,
     CleanRegionError,
 )
+from django_rossvyaz.models import PhoneCode
 
 
 DELETE_SQL = "DELETE FROM django_rossvyaz_phonecode WHERE phone_type='{}'"
