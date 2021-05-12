@@ -6,6 +6,9 @@
 </head>
 <body>
     <h1>Rossvyaz File Import</h1>
+    <p>Example csv:</p>
+    <pre>first_code;from_code;to_code;block_size;operator;region;mnc
+900;"0000000";"0061999";62000;"Т2 Мобайл" ООО;25;20</pre>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <p>import_file: {{ form.import_file }}</p>
