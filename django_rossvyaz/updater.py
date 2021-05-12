@@ -1,3 +1,4 @@
+import sys
 import traceback
 
 from django.core.mail import mail_admins
@@ -49,8 +50,8 @@ def do_update(import_file, phone_type, with_clean, coding):
     try:
         with transaction.atomic():
             _execute_sql(cursor, lines, phone_type)
-    except Exception as e:
-        _handle_error(e)
+    except Exception:
+        _handle_error()
     return 'Table rossvyaz phonecode is update.\n'
 
 
@@ -69,8 +70,8 @@ def _get_phonecode_lines(phonecode_file, phone_type, coding, with_clean):
             rossvyaz_row[-2] = clean_operator(operator)
             try:
                 rossvyaz_row[-1] = clean_region(region_name)
-            except CleanRegionError as e:
-                _handle_error(e)
+            except CleanRegionError:
+                _handle_error()
 
         row = rossvyaz_row + [phone_type]
         ret.append(row)
@@ -85,8 +86,8 @@ def _execute_sql(cursor, lines, phone_type):
     cursor.executemany(INSERT_SQL, [l for l in lines if l])
 
 
-def _handle_error(e):
-    message = f'The data not updated: {traceback.format_exception(e)}'
+def _handle_error():
+    message = f'The data not updated: {traceback.format_exception(*sys.exc_info())}'
     if send_message:
         mail_admins(subject=ERROR_SUBJECT, message=message)
     raise UpdateError(message)
