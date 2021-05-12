@@ -87,9 +87,19 @@ django-rossvyaz
 
   $ python manage.py rossvyaz_update --phone-type=def --clean-region
   
-Рекомендуется обновлять базу с кодами отсюда: https://zniis.ru/table-of-route-numbers/ - скачивается файл XLSX, форматируете в CSV формат: **zniis.csv**  ::
+Рекомендуется обновлять базу с кодами отсюда:
 
-  $ python manage.py rossvyaz_update --phone-type=def --encoding='utf-8' --filename=/path/to/zniis.csv
+* https://rossvyaz.gov.ru/deyatelnost/resurs-numeracii/vypiska-iz-reestra-sistemy-i-plana-numeracii
+* https://zniis.ru/table-of-route-numbers/
+
+
+Скачивается файл XLSX, форматируете в CSV формат:
+
+Загружаете через консольную команду:
+
+    $ python manage.py rossvyaz_update --phone-type=def --encoding='utf-8' --filename=/path/to/zniis.csv
+
+Или же через web-интерфейс.
 
 Формат CSV:
 
