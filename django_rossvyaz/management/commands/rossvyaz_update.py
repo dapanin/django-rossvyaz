@@ -10,14 +10,14 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--phone-type', type=str)
-        parser.add_argument('--clean-region', type=bool, default=False)
+        parser.add_argument('--with-clean', type=bool, default=False)
         parser.add_argument('--filename', type=str, default=None)
         parser.add_argument('--encoding', type=str, default=None)
 
     def handle(self, *args, **options):
 
         phone_type = options['phone_type']
-        with_clean = options['clean_region']
+        with_clean = options['with_clean']
         filename = options['filename']
         coding = options['encoding']
 

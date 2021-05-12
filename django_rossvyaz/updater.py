@@ -59,22 +59,22 @@ def _get_phonecode_lines(phonecode_file, phone_type, coding, with_clean):
     ret = []
     for l in phonecode_file:
         line = l.decode(coding).strip()
-        if not line:
-            continue
-        rossvyaz_row = line.split(';')
-        rossvyaz_row = [v.strip().strip('\'"').strip() for v in rossvyaz_row]
-        operator = rossvyaz_row[-2]
-        region_name = rossvyaz_row[-1]
+        if line:
+            rossvyaz_row = line.split(';')
+            rossvyaz_row = [v.strip().strip('\'"').strip() for v in rossvyaz_row]
 
-        if with_clean:
-            rossvyaz_row[-2] = clean_operator(operator)
-            try:
-                rossvyaz_row[-1] = clean_region(region_name)
-            except CleanRegionError:
-                _handle_error()
+            if with_clean:
+                operator = rossvyaz_row[-3]
+                region_name = rossvyaz_row[-2]
 
-        row = rossvyaz_row + [phone_type]
-        ret.append(row)
+                rossvyaz_row[-3] = clean_operator(operator)
+                try:
+                    rossvyaz_row[-2] = clean_region(region_name)
+                except CleanRegionError:
+                    _handle_error()
+
+            row = rossvyaz_row + [phone_type]
+            ret.append(row)
     return ret
 
 

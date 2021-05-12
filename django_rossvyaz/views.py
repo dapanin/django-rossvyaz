@@ -12,7 +12,7 @@ def rossvyaz_update(request):
     if form.is_valid():
         import_file = form.cleaned_data['import_file']
         phone_type = form.cleaned_data['phone_type']
-        with_clean = form.cleaned_data['with_clean_region']
+        with_clean = form.cleaned_data['with_clean']
         coding = form.cleaned_data['coding']
         try:
             do_update(import_file, phone_type, with_clean, coding)
