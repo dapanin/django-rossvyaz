@@ -15,7 +15,8 @@ def rossvyaz_update(request):
         with_clean = form.cleaned_data['with_clean']
         coding = form.cleaned_data['coding']
         try:
-            do_update(import_file, phone_type, with_clean, coding)
+            with import_file:
+                do_update(import_file, phone_type, with_clean, coding)
         except UpdateError as exc:
             errors = str(exc)
         else:

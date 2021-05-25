@@ -130,7 +130,7 @@ for right_name in replace_data.values():
 
 def clean_operator(operator):
     if operator:
-        return operator.title()
+        return operator.capitalize()
     return operator
 
 

@@ -27,10 +27,10 @@ class Command(BaseCommand):
             import_file = urlopen(Request(source_url))
         else:
             print(f'Open csv-file: {filename}...')
-            import_file = open(filename, 'rb')
+            import_file = open(filename, 'rb', newline='')
 
         try:
-            do_update(import_file, phone_type, with_clean, coding)
+            with import_file:
+                do_update(import_file, phone_type, with_clean, coding)
         except UpdateError as exc:
             raise CommandError(exc)
-

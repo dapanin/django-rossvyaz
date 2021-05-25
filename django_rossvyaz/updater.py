@@ -1,3 +1,4 @@
+import csv
 import sys
 import traceback
 
@@ -42,39 +43,40 @@ def do_update(import_file, phone_type, with_clean, coding):
             'Add new type to django_rossvyaz.models.PhoneCode.PHONE_TYPE_CHOICES'
             ')')
 
-    import_file.readline()  # First line is titles row
+    def csv_iter():
+        for line in import_file:
+            line = line.decode(coding).strip()
+            if line:
+                yield line
+
+    phonecode_reader = csv.reader(csv_iter(), delimiter=';', quotechar='"')
+
     print('Start updating...')
-    lines = _get_phonecode_lines(import_file, phone_type, coding, with_clean)
-    import_file.close()
+    lines = _get_phonecode_lines(phonecode_reader, phone_type, with_clean)
     cursor = connection.cursor()
     try:
         with transaction.atomic():
             _execute_sql(cursor, lines, phone_type)
     except Exception:
         _handle_error()
-    return 'Table rossvyaz phonecode is update.\n'
+    return 'Table rossvyaz phonecode is updated.\n'
 
 
-def _get_phonecode_lines(phonecode_file, phone_type, coding, with_clean):
+def _get_phonecode_lines(phonecode_reader, phone_type, with_clean):
     ret = []
-    for l in phonecode_file:
-        line = l.decode(coding).strip()
-        if line:
-            rossvyaz_row = line.split(';')
-            rossvyaz_row = [v.strip().strip('\'"').strip() for v in rossvyaz_row]
+    for rossvyaz_row in phonecode_reader:
+        if with_clean:
+            operator = rossvyaz_row[-3]
+            region_name = rossvyaz_row[-2]
 
-            if with_clean:
-                operator = rossvyaz_row[-3]
-                region_name = rossvyaz_row[-2]
+            rossvyaz_row[-3] = clean_operator(operator)
+            try:
+                rossvyaz_row[-2] = clean_region(region_name)
+            except CleanRegionError:
+                _handle_error()
 
-                rossvyaz_row[-3] = clean_operator(operator)
-                try:
-                    rossvyaz_row[-2] = clean_region(region_name)
-                except CleanRegionError:
-                    _handle_error()
-
-            row = rossvyaz_row + [phone_type]
-            ret.append(row)
+        row = rossvyaz_row + [phone_type]
+        ret.append(row)
     return ret
 
 
