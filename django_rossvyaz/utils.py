@@ -4,10 +4,17 @@ from pathlib import Path, PosixPath
 
 import xlrd
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.utils.encoding import force_str
 
 
 CSV_ARGS = {'delimiter': ';', 'quotechar': '"'}
 DEFAULT_EXT = '.csv'
+
+
+def _fmt_cell_val(val):
+    if type(val) is float:
+        val = repr(val).split(".")[0]
+    return force_str(val)
 
 
 def xls_converter(fl):
@@ -17,7 +24,8 @@ def xls_converter(fl):
     result = []
     for s in wb.sheets()[:1]:
         for row in range(s.nrows):
-            result.append([s.cell(row, col).value for col in range(s.ncols)])
+            result.append(
+                [_fmt_cell_val(s.cell(row, col).value) for col in range(s.ncols)])
     buff = io.StringIO()
     csvwriter = csv.writer(buff, **CSV_ARGS)
     csvwriter.writerows(result)
