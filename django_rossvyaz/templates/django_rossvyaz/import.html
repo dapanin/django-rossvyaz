@@ -7,15 +7,18 @@
 <body>
     <h1>Rossvyaz File Import</h1>
     <p>Columns order:</p>
-    <pre>first_code;from_code;to_code;block_size;operator;region;mnc</pre>
+    <pre>first_code;from_code;to_code;block_size;operator;region;mnc;[other columns will be skipped]</pre>
     <p>Example csv:</p>
     <pre>900;"0000000";"0061999";62000;"Т2 Мобайл" ООО;25;20</pre>
+    <p>Supported extensions: {{ supported_extensions }}</p>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <p>import_file: {{ form.import_file }}</p>
         <p>phone_type: {{ form.phone_type }}</p>
-        <p>with_clean: {{ form.with_clean }}</p>
         <p>coding: {{ form.coding }}</p>
+        <p>with_clean: {{ form.with_clean }}</p>
+        <p>skip_header: {{ form.skip_header }}</p>
+        <p>dry_run: {{ form.dry_run }}</p>
         <p>
             <input type="submit" />
         </p>
@@ -24,7 +27,8 @@
         <p>Errors: {{ errors }}</p>
     {% endif %}
     {% if success %}
-        <p>Success!</p>
+        <h3>Success!</h3>
+        <p>{{ update_result }}</p>
     {% endif %}
 </body>
 </html>

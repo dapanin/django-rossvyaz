@@ -5,7 +5,7 @@ long_description = open('README.rst').read()
 
 setup(
     name='django-rossvyaz',
-    version='1.3.0',
+    version='1.3.1',
     author='Ivan Petukhov',
     author_email='satels@gmail.com',
     packages=['django_rossvyaz', 'django_rossvyaz.management',
@@ -31,4 +31,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Natural Language :: Russian',
     ],
+    install_requires = [
+        'xlrd==1.2.0',
+    ]
 )

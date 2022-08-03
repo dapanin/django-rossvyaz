@@ -60,7 +60,7 @@ django-rossvyaz
           print(phonecode.from_code, phonecode.to_code)  # Диапозон кодов (В этом примере: '3500000'-'7999999')
           print(phonecode.block_size)  # Кол-во номеров в диапозоне (4500000)
           print(phonecode.operator)  # Оператор связи ('ВымпелКом')
-          print(phonecode.mnc)  # Mobile network code 
+          print(phonecode.mnc)  # Mobile network code
           print(phonecode.region)  # Код региона (или название региона) (77)
           print(phonecode.phone_type)  # 'def'
 
@@ -86,7 +86,7 @@ django-rossvyaz
 Чтобы обновить базу ::
 
   $ python manage.py rossvyaz_update --phone-type=def --clean-region
-  
+
 Рекомендуется обновлять базу с кодами отсюда:
 
 * https://rossvyaz.gov.ru/deyatelnost/resurs-numeracii/vypiska-iz-reestra-sistemy-i-plana-numeracii
@@ -97,7 +97,7 @@ django-rossvyaz
 
 Загружаете через консольную команду:
 
-    $ python manage.py rossvyaz_update --phone-type=def --encoding='utf-8' --filename=/path/to/zniis.csv
+    $ python manage.py rossvyaz_update --phone-type=def --encoding='utf-8' --encoding='utf-8' --skip-header --dry-run --filename=/path/to/zniis.csv
 
 Или же через web-интерфейс.
 
