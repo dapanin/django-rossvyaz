@@ -32,6 +32,6 @@ setup(
         'Natural Language :: Russian',
     ],
     install_requires = [
-        'xlrd==1.2.0',
+        'xlrd>=1.2.0',
     ]
 )
