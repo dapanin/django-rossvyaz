@@ -10,7 +10,7 @@ CSV_ARGS = {"delimiter": ";", "quotechar": '"'}
 DEFAULT_EXT = ".csv"
 
 
-class XlsToCsvConverter:
+class XlsConverter:
     def convert(self, fl) -> io.StringIO:
         file_contents = None if type(fl) == PosixPath else fl.getvalue()
         wb = xlrd.open_workbook(fl, file_contents=file_contents)
@@ -56,7 +56,7 @@ class XlsToCsvConverter:
 
 
 CONVERTERS = {
-    ".xls": XlsToCsvConverter(),
+    ".xls": XlsConverter(),
 }
 
 
