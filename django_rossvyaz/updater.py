@@ -12,14 +12,30 @@ from django_rossvyaz.logic import CleanRegionError, clean_operator, clean_region
 from django_rossvyaz.models import PhoneCode
 from django_rossvyaz.utils import CSV_ARGS
 
-DELETE_SQL = "DELETE FROM django_rossvyaz_phonecode WHERE phone_type='{}'"
 
-INSERT_SQL = """
-INSERT INTO django_rossvyaz_phonecode
-(first_code, from_code, to_code, block_size, operator, region, mnc, phone_type)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+ORIGINAL_TABLE_NAME = 'django_rossvyaz_phonecode'
+COPY_TABLE_NAME = 'django_rossvyaz_phonecode_v2'
+TEMP_TABLE_NAME = 'django_rossvyaz_phonecode_temp'
+
+CREATE_COPY_TABLE_SQL = f"""
+    CREATE TABLE {COPY_TABLE_NAME} AS
+    SELECT * FROM {ORIGINAL_TABLE_NAME}
+    WHERE phone_type<>'{{}}';
 """
 
+INSERT_SQL = f"""
+    INSERT INTO {COPY_TABLE_NAME}
+    (first_code, from_code, to_code, block_size, operator, region, mnc, phone_type)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+"""
+
+RENAME_TABLE_SQL = """
+    ALTER TABLE {} RENAME TO {};
+"""
+
+DROP_TABLE_SQL = """
+    DROP TABLE {};
+"""
 ERROR_SUBJECT = "Error of command rossvyaz_update"
 send_message = ROSSVYAZ_SEND_MESSAGE_FOR_ERRORS
 
@@ -105,10 +121,18 @@ def _get_phonecode_lines(phonecode_reader, phone_type, with_clean, skip_header):
 
 
 def _execute_sql(cursor, lines, phone_type):
-    print("Delete old rows in table rossvyaz phonecodes...")
-    cursor.execute(DELETE_SQL.format(phone_type))
+    print("Create new table from select...")
+    cursor.execute(CREATE_COPY_TABLE_SQL.format(phone_type))
+
     print("Write new data...")
     cursor.executemany(INSERT_SQL, [l for l in lines if l])
+
+    print("Replace names...")
+    cursor.execute(RENAME_TABLE_SQL.format(ORIGINAL_TABLE_NAME, TEMP_TABLE_NAME))
+    cursor.execute(RENAME_TABLE_SQL.format(COPY_TABLE_NAME, ORIGINAL_TABLE_NAME))
+
+    print("Drop old table...")
+    cursor.execute(DROP_TABLE_SQL.format(TEMP_TABLE_NAME))
 
 
 def _handle_error():
