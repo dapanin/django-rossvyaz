@@ -34,7 +34,7 @@ RENAME_TABLE_SQL = """
 """
 
 DROP_TABLE_SQL = """
-    DROP TABLE {};
+    DROP TABLE IF EXISTS {};
 """
 ERROR_SUBJECT = "Error of command rossvyaz_update"
 send_message = ROSSVYAZ_SEND_MESSAGE_FOR_ERRORS
@@ -87,8 +87,7 @@ def do_update(
         dry_run_msg = ""
         try:
             cursor = connection.cursor()
-            with transaction.atomic():
-                _execute_sql(cursor, lines, phone_type)
+            _execute_sql(cursor, lines, phone_type)
         except Exception:
             _handle_error()
     return f"{dry_run_msg}Table rossvyaz phonecode is updated with {len(lines)} lines.\n"
@@ -122,14 +121,17 @@ def _get_phonecode_lines(phonecode_reader, phone_type, with_clean, skip_header):
 
 def _execute_sql(cursor, lines, phone_type):
     print("Create new table from select...")
+    cursor.execute(DROP_TABLE_SQL.format(TEMP_TABLE_NAME))
+    cursor.execute(DROP_TABLE_SQL.format(COPY_TABLE_NAME))
     cursor.execute(CREATE_COPY_TABLE_SQL.format(phone_type))
 
     print("Write new data...")
     cursor.executemany(INSERT_SQL, [l for l in lines if l])
 
     print("Replace names...")
-    cursor.execute(RENAME_TABLE_SQL.format(ORIGINAL_TABLE_NAME, TEMP_TABLE_NAME))
-    cursor.execute(RENAME_TABLE_SQL.format(COPY_TABLE_NAME, ORIGINAL_TABLE_NAME))
+    with transaction.atomic():
+        cursor.execute(RENAME_TABLE_SQL.format(ORIGINAL_TABLE_NAME, TEMP_TABLE_NAME))
+        cursor.execute(RENAME_TABLE_SQL.format(COPY_TABLE_NAME, ORIGINAL_TABLE_NAME))
 
     print("Drop old table...")
     cursor.execute(DROP_TABLE_SQL.format(TEMP_TABLE_NAME))
